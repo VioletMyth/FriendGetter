@@ -14,21 +14,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const User_1 = __importDefault(require("../models/User"));
-const lodash_1 = __importDefault(require("lodash"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const config_1 = __importDefault(require("config"));
 const router = express_1.Router();
 router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, email, password } = req.body;
-    let user = new User_1.default({
-        name: name,
-        email: email,
-        password: password,
-    });
-    yield user.save();
-    res.send(lodash_1.default.pick(user, ["name, email"]));
-}));
-router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    //Find all users
-    const users = User_1.default.find();
-    res.send(users);
+    const { email, password } = req.body;
+    let user = yield User_1.default.findOne({ email: email });
+    if (!user) {
+        return res.send("Invalid email or password");
+    }
+    if (user.password !== password) {
+        return res.send("Invalid email or password");
+    }
+    const token = jsonwebtoken_1.default.sign({ _id: user._id }, config_1.default.get("jwtPrivateKey"));
+    res.send(token);
 }));
 exports.default = router;

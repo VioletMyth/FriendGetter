@@ -1,5 +1,5 @@
-import mongoose, {Schema} from "mongoose";
-import IUser from "../interfaces/user"
+import mongoose, { Schema } from "mongoose";
+import IUser from "../interfaces/user";
 
 const User = mongoose.model<IUser>(
   "User",
@@ -22,6 +22,11 @@ const User = mongoose.model<IUser>(
       required: true,
       minLength: 5,
       maxLength: 1024,
+    },
+    address: {
+      type: String,
+      require: true,
+      maxLength: 200,
     },
   })
 );

@@ -40,5 +40,10 @@ const User = mongoose_1.default.model("User", new mongoose_1.Schema({
         minLength: 5,
         maxLength: 1024,
     },
+    address: {
+        type: String,
+        require: true,
+        maxLength: 200,
+    },
 }));
 exports.default = User;
