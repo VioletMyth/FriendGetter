@@ -1,3 +1,4 @@
 {
-    "jwtPrivateKey": "friendgetter_jwtPrivateKey"
+    "jwtPrivateKey": "friendgetter_jwtPrivateKey",
+    "googleAPIKey": ""
 }
