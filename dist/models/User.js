@@ -24,7 +24,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const config_1 = __importDefault(require("config"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 const userSchema = new mongoose_1.Schema({
     name: {
         type: String,
@@ -55,7 +56,7 @@ const userSchema = new mongoose_1.Schema({
     }
 });
 userSchema.methods.generateAuthToken = function () {
-    const token = jsonwebtoken_1.default.sign({ _id: this._id }, config_1.default.get("jwtPrivateKey"));
+    const token = jsonwebtoken_1.default.sign({ _id: this._id }, process.env.jwtPrivateKey);
     return token;
 };
 const User = mongoose_1.default.model("User", userSchema);

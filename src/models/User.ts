@@ -2,6 +2,9 @@ import mongoose, { Schema } from "mongoose";
 import IFriend from "../interfaces/user";
 import jwt from "jsonwebtoken";
 import config from "config";
+import dotenv from "dotenv"
+
+dotenv.config()
 
 const userSchema = new Schema({
   name: {
@@ -34,7 +37,8 @@ const userSchema = new Schema({
 });
 
 userSchema.methods.generateAuthToken = function () {
-  const token = jwt.sign({ _id: this._id }, config.get("jwtPrivateKey"));
+
+  const token = jwt.sign({ _id: this._id }, process.env.jwtPrivateKey!);
   return token;
 };
 

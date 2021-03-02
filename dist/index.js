@@ -8,9 +8,8 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const user_1 = __importDefault(require("./routes/user"));
 const auth_1 = __importDefault(require("./routes/auth"));
 const friend_1 = __importDefault(require("./routes/friend"));
-const config_1 = __importDefault(require("config"));
-if (!config_1.default.get("jwtPrivateKey")) {
-    console.log(config_1.default.get("jwtPrivateKey"));
+if (!process.env.jwtPrivateKey) {
+    console.log(process.env.jwtPrivateKey);
     console.log("FATAL ERROR JWTPRIVATEKEY HAS NOT BEEN DEFINED.");
     process.exit(1);
 }

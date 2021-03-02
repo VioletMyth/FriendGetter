@@ -2,14 +2,20 @@ import axios from "axios";
 import encodeUrl from "encodeurl"
 import querystring from "querystring"
 import config from "config"
+import dotenv from "dotenv"
+
+dotenv.config()
 
 const autoCompletePlace = (address: string) => {
     let url = "https://maps.googleapis.com/maps/api/place/autocomplete/json"
-    const params = {
+    let params = {
         input: address,
-        key: config.get("googleAPIKey")
+        key: process.env.googleAPIKey
     }
-    console.log()
+    const query = querystring.stringify(params)
+    console.log(query)
 }
 
-autoCompletePlace();
+autoCompletePlace("42a oakdale road");
+
+export default autoCompletePlace

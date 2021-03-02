@@ -3,10 +3,11 @@ import mongoose from "mongoose";
 import userRoute from "./routes/user";
 import authRoute from "./routes/auth";
 import friendRoute from "./routes/friend";
-import config from "config";
+import dotenv from "dotenv"
+import autoCompletePlace from "./services/placeAutoComplete"
 
-if(!config.get("jwtPrivateKey")){
-    console.log(config.get("jwtPrivateKey"))
+if(!process.env.jwtPrivateKey){
+    console.log(process.env.jwtPrivateKey)
     console.log("FATAL ERROR JWTPRIVATEKEY HAS NOT BEEN DEFINED.")
     process.exit(1)
 }
