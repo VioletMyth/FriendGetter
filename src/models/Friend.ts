@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import IUser from "../interfaces/user";
-import jwt from "jsonwebtoken";
-import config from "config";
+import jwt from "jsonwebtoken"
+import config from "config"
 
 const userSchema = new Schema({
   name: {
@@ -23,17 +23,21 @@ const userSchema = new Schema({
     minLength: 5,
     maxLength: 1024,
   },
-  friends: [{
-    type: Schema.Types.ObjectId,
-    ref: "Friend"
-  }]
-});
+  address: {
+    type: String,
+    require: true,
+    maxLength: 200,
+  },
+})
 
 userSchema.methods.generateAuthToken = function () {
   const token = jwt.sign({ _id: this._id }, config.get("jwtPrivateKey"));
-  return token;
-};
+  return token
+}
 
-const User = mongoose.model<IUser>("User", userSchema);
+const User = mongoose.model<IUser>(
+  "User",
+  userSchema
+);
 
 export default User;

@@ -24,11 +24,23 @@ router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         password: password,
     });
     yield user.save();
+    const token = user.generateAuthToken();
+    res.header("x-auth-token", token);
     res.send(lodash_1.default.pick(user, ["name, email"]));
 }));
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //Find all users
     const users = User_1.default.find();
     res.send(users);
+}));
+router.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { _id, friend } = req.body;
+    const user = yield User_1.default.findById(_id);
+    if (!user) {
+        return;
+    }
+    user.friends.push(friend);
+    const result = yield user.save();
+    res.send(result);
 }));
 exports.default = router;

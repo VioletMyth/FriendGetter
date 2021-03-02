@@ -45,10 +45,11 @@ const userSchema = new mongoose_1.Schema({
         minLength: 5,
         maxLength: 1024,
     },
-    friends: [{
-            type: mongoose_1.Schema.Types.ObjectId,
-            ref: "Friend"
-        }]
+    address: {
+        type: String,
+        require: true,
+        maxLength: 200,
+    },
 });
 userSchema.methods.generateAuthToken = function () {
     const token = jsonwebtoken_1.default.sign({ _id: this._id }, config_1.default.get("jwtPrivateKey"));
