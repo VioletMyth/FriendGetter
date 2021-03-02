@@ -1,13 +1,13 @@
 import { Request, Response, Router } from "express";
 import User from "../models/User";
-import IUser from "../interfaces/user";
+import IFriend from "../interfaces/user";
 import _ from "lodash";
-import Friend from "../models/Friend";
+// import Friend from "../models/Friend";
 
 const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
-  const { name, email, password } = <IUser>req.body;
+  const { name, email, password } = <IFriend>req.body;
   let user = new User({
     name: name,
     email: email,

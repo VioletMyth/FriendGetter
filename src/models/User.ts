@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import IUser from "../interfaces/user";
+import IFriend from "../interfaces/user";
 import jwt from "jsonwebtoken";
 import config from "config";
 
@@ -26,7 +26,11 @@ const userSchema = new Schema({
   friends: [{
     type: Schema.Types.ObjectId,
     ref: "Friend"
-  }]
+  }],
+  address: {
+    type: Schema.Types.ObjectId,
+    ref: "Address"
+  }
 });
 
 userSchema.methods.generateAuthToken = function () {
@@ -34,6 +38,6 @@ userSchema.methods.generateAuthToken = function () {
   return token;
 };
 
-const User = mongoose.model<IUser>("User", userSchema);
+const User = mongoose.model<IFriend>("User", userSchema);
 
 export default User;

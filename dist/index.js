@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const user_1 = __importDefault(require("./routes/user"));
 const auth_1 = __importDefault(require("./routes/auth"));
+const friend_1 = __importDefault(require("./routes/friend"));
 const config_1 = __importDefault(require("config"));
 if (!config_1.default.get("jwtPrivateKey")) {
     console.log(config_1.default.get("jwtPrivateKey"));
@@ -21,5 +22,6 @@ const app = express_1.default();
 app.use(express_1.default.json());
 app.use("/api/users", user_1.default);
 app.use("/api/auth", auth_1.default);
+app.use("/api/friends", friend_1.default);
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));

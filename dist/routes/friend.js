@@ -13,35 +13,40 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const User_1 = __importDefault(require("../models/User"));
-const lodash_1 = __importDefault(require("lodash"));
-// import Friend from "../models/Friend";
+const Friend_1 = __importDefault(require("../models/Friend"));
 const router = express_1.Router();
 router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, email, password } = req.body;
-    let user = new User_1.default({
-        name: name,
-        email: email,
-        password: password,
+    // const address = new Address({
+    //   street_number: "28",
+    //   address: "Hendon Avenue",
+    //   suburb: "Mount Albert",
+    //   city: "Auckland",
+    //   country: "New Zealand",
+    //   postal_code: 1041
+    // })
+    // address.save()
+    const { first_name, last_name, address } = req.body;
+    let friend = new Friend_1.default({
+        first_name: first_name,
+        last_name: last_name,
+        address: address,
     });
-    yield user.save();
-    const token = user.generateAuthToken();
-    res.header("x-auth-token", token);
-    res.send(lodash_1.default.pick(user, ["name, email"]));
+    yield friend.save();
+    res.send(friend);
 }));
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //Find all users
-    const users = User_1.default.find();
-    res.send(users);
+    const friends = Friend_1.default.find();
+    res.send(friends);
 }));
-router.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { _id, friend } = req.body;
-    const user = yield User_1.default.findById(_id);
-    if (!user) {
-        return;
-    }
-    user.friends.push(friend);
-    const result = yield user.save();
-    res.send(result);
-}));
+// router.put("/:id", async (req: Request, res: Response) => {
+// 	const { _id } = req.body
+// 	const friend = await Friend.findById(_id)
+// 	if(!friend){
+// 		return
+// 	}
+// 	friend.friends.push(friend)
+// 	const result = await friend.save()
+// 	res.send(result)
+// })
 exports.default = router;

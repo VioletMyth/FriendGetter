@@ -1,43 +1,26 @@
 import mongoose, { Schema } from "mongoose";
-import IUser from "../interfaces/user";
-import jwt from "jsonwebtoken"
-import config from "config"
+import IFriend from "../interfaces/friend";
 
-const userSchema = new Schema({
-  name: {
+const friendSchema = new Schema({
+  first_name: {
     type: String,
     required: true,
-    minLength: 5,
     maxLength: 50,
   },
-  email: {
+  last_name: {
     type: String,
     required: true,
-    minLength: 5,
     maxLength: 50,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-    minLength: 5,
-    maxLength: 1024,
   },
   address: {
-    type: String,
-    require: true,
-    maxLength: 200,
+    type: Schema.Types.ObjectId,
+    ref: "ref"
   },
 })
 
-userSchema.methods.generateAuthToken = function () {
-  const token = jwt.sign({ _id: this._id }, config.get("jwtPrivateKey"));
-  return token
-}
-
-const User = mongoose.model<IUser>(
-  "User",
-  userSchema
+const Friend = mongoose.model<IFriend>(
+  "Friend",
+  friendSchema
 );
 
-export default User;
+export default Friend;

@@ -20,21 +20,38 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const friendSchema = new mongoose_1.Schema({
-    first_name: {
+const addressSchema = new mongoose_1.Schema({
+    street_number: {
         type: String,
         required: true,
-        maxLength: 50,
-    },
-    last_name: {
-        type: String,
-        required: true,
-        maxLength: 50,
     },
     address: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: "ref"
+        type: String,
+        required: true,
+        maxLength: 200,
+        unique: true,
+    },
+    suburb: {
+        type: String,
+        required: true,
+        minLength: 5,
+        maxLength: 100,
+    },
+    city: {
+        type: String,
+        require: true,
+        maxLength: 100,
+    },
+    country: {
+        type: String,
+        require: true,
+        maxLength: 100,
+    },
+    postal_code: {
+        type: Number,
+        require: true,
+        maxLength: 8,
     },
 });
-const Friend = mongoose_1.default.model("Friend", friendSchema);
-exports.default = Friend;
+const Address = mongoose_1.default.model("Address", addressSchema);
+exports.default = Address;

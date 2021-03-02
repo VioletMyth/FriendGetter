@@ -2,9 +2,9 @@ import mongoose, { Schema } from "mongoose";
 import IAddress from "../interfaces/address";
 
 const addressSchema = new Schema({
-    street_number: {
+  street_number: {
     type: String,
-    required: true
+    required: true,
   },
   address: {
     type: String,
@@ -31,13 +31,10 @@ const addressSchema = new Schema({
   postal_code: {
     type: Number,
     require: true,
-    maxLength: 8
+    maxLength: 8,
   },
-})
+});
 
-const Address = mongoose.model<IAddress>(
-  "Address",
-  addressSchema
-);
+const Address = mongoose.model<IAddress>("Address", addressSchema);
 
 export default Address;
