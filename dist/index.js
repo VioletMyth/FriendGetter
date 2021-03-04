@@ -22,5 +22,7 @@ app.use(express_1.default.json());
 app.use("/api/users", user_1.default);
 app.use("/api/auth", auth_1.default);
 app.use("/api/friends", friend_1.default);
+// autoCompletePlace("42a Oakdale Road")
+// console.log(something)
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));

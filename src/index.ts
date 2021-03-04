@@ -21,6 +21,8 @@ app.use(express.json());
 app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/friends", friendRoute);
+// autoCompletePlace("42a Oakdale Road")
+// console.log(something)
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));

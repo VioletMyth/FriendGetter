@@ -1,0 +1,87 @@
+const something = {
+  "42A Oakdale Road": [
+    {
+      destination_address: "28 Hendon Avenue",
+      distnace: 132,
+      duration: "12 mins",
+    },
+    {
+      destination_address: "1 godwit place",
+      distnace: 1320,
+      duration: "8 mins",
+    },
+    {
+      destination_address: "12 sommerset road",
+      distnace: 156,
+      duration: "15 mins",
+    },
+    {
+      destination_address: "kfc royal oak",
+      distnace: 134,
+      duration: "16 mins",
+    },
+  ],
+};
+
+const something2 = {
+  "28 Hendon Ave": [
+    {
+      destination_address: "1 godwit place",
+      distnace: 1320,
+      duration: "6 mins",
+    },
+    {
+      destination_address: "12 sommerset road",
+      distnace: 156,
+      duration: "12 mins",
+    },
+    {
+      destination_address: "kfc royal oak",
+      distnace: 134,
+      duration: "5 mins",
+    },
+  ],
+  "1 godwit place": [
+    {
+      destination_address: "28 hendon avenue",
+      distnace: 120,
+      duration: "13 mins",
+    },
+    {
+      destination_address: "10 sommerset road",
+      distnace: 156,
+      duration: "10 mins",
+    },
+    {
+      destination_address: "kfc royal oak",
+      distnace: 134,
+      duration: "5 mins",
+    },
+  ],
+};
+
+//     let secondVisit = something2[firstVisit].reduce((min, place) => min.duration < min.duration ? min : place)
+//     console.log(secondVisit)
+
+//     // let firstVisit = something["42A Oakdale Road"].reduce((min, place) => min.duration < min.duration ? min : place).destination_address;
+//     // for (const [origin, destinations] of Object.entries(originArray)) {
+//     //     const unvisited = originArray.keys()
+//     //     destinations.forEach((destination) => {
+//     //         unvisited.filter(item => item !== destination)
+//     //         unvisited.forEach((item) => {
+
+//     //         })
+
+//     //     })
+//     //     console.log(`${key}: ${value}`);
+//     // }
+//     for (const [origin, destinations] of Object.entries(originArray)) {
+//         const unvisited = originArray.keys()
+//         const path = []
+//         unvisited.forEach((item) => {
+//             path.push(item)
+//         })
+//     }
+//     console.log(firstVisit)
+//     path.push(origin)
+//     path.push(firstVisit)
