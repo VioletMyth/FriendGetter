@@ -5,7 +5,7 @@ import encodeUrl from "encodeurl";
 import dotenv from "dotenv";
 import querystring from "querystring";
 
-dotenv.config();
+// dotenv.config();
 
 const getAllDurationsInTrafficFromOrigin = async (
   addresses: string[],
@@ -46,11 +46,49 @@ const getAllDurationsInTrafficFromOrigin = async (
   }
 };
 
-const getAllDurationsInTrafficFromAddressToAddressPromises = (
+// const getAllDurationsInTrafficFromAddressToAddressPromises = async (
+//   addresses: string[]
+// ) => {
+//     const data : any= {}
+//     addresses.forEach(async (address) => {
+//     let url = "https://maps.googleapis.com/maps/api/distancematrix/json?";
+//     const destinationsString = addresses.join("|place_id:");
+//     const params = {
+//       origins: "place_id:" + address,
+//       destinations: "place_id:" + destinationsString,
+//       key: process.env.googleAPIKey,
+//       traffic_model: "best_guess",
+//       departure_time: Date.now(),
+//     };
+//     const query = querystring.stringify(params);
+//     url = url.concat(query);
+//     try {
+//       const response = await axios.get(url);
+//       const responseData = response.data;
+//       var arrayLength = responseData.destination_addresses.length;
+//       data[responseData.origin_addresses] = [];
+//       for (var i = 0; i < arrayLength; i++) {
+//         data[responseData.origin_addresses].push({
+//           destination_address: responseData.destination_addresses[i],
+//           duration_in_traffic:
+//           responseData.rows[0].elements[i].duration_in_traffic,
+//           distance: responseData.rows[0].elements[i].distance,
+//         })
+//         ;
+//       }
+//     } catch (error) {
+//       console.error(error);
+//       return;
+//     }
+// });
+// return data;
+// };
+
+const getAllDurationsInTrafficFromAddressToAddressPromises = async (
   addresses: string[]
 ) => {
-    const data : any= {}
-    addresses.forEach((address) => {
+  const data: any = {};
+  for (let address of addresses) {
     let url = "https://maps.googleapis.com/maps/api/distancematrix/json?";
     const destinationsString = addresses.join("|place_id:");
     const params = {
@@ -63,7 +101,7 @@ const getAllDurationsInTrafficFromAddressToAddressPromises = (
     const query = querystring.stringify(params);
     url = url.concat(query);
     try {
-      const response = axios.get(url);
+      const response = await axios.get(url);
       const responseData = response.data;
       var arrayLength = responseData.destination_addresses.length;
       data[responseData.origin_addresses] = [];
@@ -71,18 +109,17 @@ const getAllDurationsInTrafficFromAddressToAddressPromises = (
         data[responseData.origin_addresses].push({
           destination_address: responseData.destination_addresses[i],
           duration_in_traffic:
-          responseData.rows[0].elements[i].duration_in_traffic,
+            responseData.rows[0].elements[i].duration_in_traffic,
           distance: responseData.rows[0].elements[i].distance,
         });
       }
-    // promises.push(response)
-
+      // console.log(responseData)
     } catch (error) {
       console.error(error);
       return;
     }
-});
-return data;
+  }
+  return data
 };
 
 const getAllIntermediateAddresses = (addresses: any) => {
@@ -237,32 +274,42 @@ const calculateDurations = () => {
   });
 };
 
-const resolveAddressToAddressPromises = async (promises: any) => {
-    const data :any = []
-    for(let i = 0; i < promises.length; i++){
-        promises[i].then((res :any) => {
-            data.push(res)
-            console.log(res)
-        })
-    }
-}
+// const resolveAddressToAddressPromises = async (promises: any) => {
+//   const data: any = [];
+//   for (let i = 0; i < promises.length; i++) {
+//     promises[i].then((res: any) => {
+//       data.push(res);
+//       console.log(res);
+//     });
+//   }
+// };
 
 // calculateDurations()
 const someFn = async () => {
-//   const durationsInTrafficFromOrigin = await getAllDurationsInTrafficFromOrigin(
-//     [
-//       "ChIJR8zzRztEDW0RgURQugqgZXc",
-//       "ChIJpb_XUG9GDW0RHHjFeUfkyaI",
-//       "ChIJ-_1UQ6ZIDW0RumOp-3Fqt2Q",
-//       "ChIJ9VaVLcJGDW0R0Zjhcz3D76c",
-//     ],
-//     "ChIJcbl38nRGDW0RsRJ729jEPic"
-//   );
-//   console.log(durationsInTrafficFromOrigin);
-  const durationToOtherAddresses = getAllDurationsInTrafficFromAddressToAddressPromises(["ChIJR8zzRztEDW0RgURQugqgZXc", "ChIJpb_XUG9GDW0RHHjFeUfkyaI", "ChIJ-_1UQ6ZIDW0RumOp-3Fqt2Q"])
-  console.log(durationToOtherAddresses)
-  const resolvePromises = resolveAddressToAddressPromises(durationToOtherAddresses)
-  console.log(resolvePromises)
+  //   const durationsInTrafficFromOrigin = await getAllDurationsInTrafficFromOrigin(
+  //     [
+  //       "ChIJR8zzRztEDW0RgURQugqgZXc",
+  //       "ChIJpb_XUG9GDW0RHHjFeUfkyaI",
+  //       "ChIJ-_1UQ6ZIDW0RumOp-3Fqt2Q",
+  //       "ChIJ9VaVLcJGDW0R0Zjhcz3D76c",
+  //     ],
+  //     "ChIJcbl38nRGDW0RsRJ729jEPic"
+  //   );
+  //   console.log(durationsInTrafficFromOrigin);
+  const durationToOtherAddresses = await getAllDurationsInTrafficFromAddressToAddressPromises(
+    [
+      "ChIJR8zzRztEDW0RgURQugqgZXc",
+      "ChIJpb_XUG9GDW0RHHjFeUfkyaI",
+      "ChIJ-_1UQ6ZIDW0RumOp-3Fqt2Q",
+    ]
+  );
+  console.log("we are in the mains", durationToOtherAddresses)
+  // console.log(durationToOtherAddresses);
+  // const resolvePromises = resolveAddressToAddressPromises(
+  //   durationToOtherAddresses
+  // );
+  // console.log(resolvePromises);
+  // console.log(process.env.googleAPIKey)
 };
 
 someFn();
