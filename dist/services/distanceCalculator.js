@@ -33,63 +33,32 @@ const getAllDurationsInTrafficFromOrigin = (addresses, origin) => __awaiter(void
         const data = {
             [responseData.origin_addresses]: [],
         };
-        console.log(data);
         var arrayLength = responseData.destination_addresses.length;
-        console.log("responseData row elements", responseData.rows[0].elements[0]);
         for (var i = 0; i < arrayLength; i++) {
-            data[origin].push({
+            data[responseData.origin_addresses].push({
                 destination_address: responseData.destination_addresses[i],
-                duration_in_traffic: responseData.rows[0].elements[i].duration_in_traffic,
-                distance: responseData.rows[0].elements[i].distance,
+                duration_in_traffic: responseData.rows[0].elements[i].duration_in_traffic.value,
+                distance: responseData.rows[0].elements[i].distance.value,
             });
         }
-        return data;
+        return {
+            durationsInTrafficFromOrigin: data,
+            origin_address: responseData.origin_addresses[0]
+        };
     }
     catch (error) {
         console.error(error);
         return;
     }
 });
-// const getAllDurationsInTrafficFromAddressToAddressPromises = async (
-//   addresses: string[]
-// ) => {
-//     const data : any= {}
-//     addresses.forEach(async (address) => {
-//     let url = "https://maps.googleapis.com/maps/api/distancematrix/json?";
-//     const destinationsString = addresses.join("|place_id:");
-//     const params = {
-//       origins: "place_id:" + address,
-//       destinations: "place_id:" + destinationsString,
-//       key: process.env.googleAPIKey,
-//       traffic_model: "best_guess",
-//       departure_time: Date.now(),
-//     };
-//     const query = querystring.stringify(params);
-//     url = url.concat(query);
-//     try {
-//       const response = await axios.get(url);
-//       const responseData = response.data;
-//       var arrayLength = responseData.destination_addresses.length;
-//       data[responseData.origin_addresses] = [];
-//       for (var i = 0; i < arrayLength; i++) {
-//         data[responseData.origin_addresses].push({
-//           destination_address: responseData.destination_addresses[i],
-//           duration_in_traffic:
-//           responseData.rows[0].elements[i].duration_in_traffic,
-//           distance: responseData.rows[0].elements[i].distance,
-//         })
-//         ;
-//       }
-//     } catch (error) {
-//       console.error(error);
-//       return;
-//     }
-// });
-// return data;
-// };
 const getAllDurationsInTrafficFromAddressToAddressPromises = (addresses) => __awaiter(void 0, void 0, void 0, function* () {
     const data = {};
+    let destination_address;
     for (let address of addresses) {
+        // if (address == addresses[addresses.length - 1]) {
+        //   destination_address = address
+        //   break;
+        // }
         let url = "https://maps.googleapis.com/maps/api/distancematrix/json?";
         const destinationsString = addresses.join("|place_id:");
         const params = {
@@ -104,23 +73,35 @@ const getAllDurationsInTrafficFromAddressToAddressPromises = (addresses) => __aw
         try {
             const response = yield axios_1.default.get(url);
             const responseData = response.data;
-            var arrayLength = responseData.destination_addresses.length;
             data[responseData.origin_addresses] = [];
+            const indexOfOriginAddress = responseData.destination_addresses.indexOf(responseData.origin_addresses[0]);
+            if (indexOfOriginAddress > -1) {
+                responseData.destination_addresses.splice(indexOfOriginAddress, 1);
+                responseData.rows[0].elements.splice(indexOfOriginAddress, 1);
+            }
+            const arrayLength = responseData.destination_addresses.length;
             for (var i = 0; i < arrayLength; i++) {
+                if (address == addresses[addresses.length - 1]) {
+                    delete data[responseData.origin_addresses];
+                    destination_address = responseData.origin_addresses[0];
+                    break;
+                }
                 data[responseData.origin_addresses].push({
                     destination_address: responseData.destination_addresses[i],
-                    duration_in_traffic: responseData.rows[0].elements[i].duration_in_traffic,
-                    distance: responseData.rows[0].elements[i].distance,
+                    duration_in_traffic: responseData.rows[0].elements[i].duration_in_traffic.value,
+                    distance: responseData.rows[0].elements[i].distance.value,
                 });
             }
-            // console.log(responseData)
         }
         catch (error) {
             console.error(error);
             return;
         }
     }
-    return data;
+    return {
+        durationToOtherAddresses: data,
+        destination_address: destination_address
+    };
 });
 const getAllIntermediateAddresses = (addresses) => {
     const intermediateAddresses = Object.keys(addresses);
@@ -141,166 +122,82 @@ const perm = (xs) => {
     }
     return ret;
 };
-const finalisePermutations = (intermediatePermutations) => {
+const finalisePermutations = (origin_address, intermediatePermutations, destination_address) => {
     intermediatePermutations.forEach((permutation) => {
-        permutation.unshift("42A Oakdale Road");
-        permutation.push("icco sake bar");
+        permutation.unshift(origin_address);
+        permutation.push(destination_address);
     });
     return intermediatePermutations;
 };
-const something2 = {
-    "28 Hendon Avenue": [
-        {
-            destination_address: "1 godwit place",
-            distance: 1320,
-            duration: "6 mins",
-        },
-        {
-            destination_address: "1 sommerset road",
-            distance: 156,
-            duration: "12 mins",
-        },
-        {
-            destination_address: "royal oak kfc",
-            distance: 134,
-            duration: "5 mins",
-        },
-        {
-            destination_address: "icco sake bar",
-            distance: 123,
-            duration: "16 mins",
-        },
-    ],
-    "1 godwit place": [
-        {
-            destination_address: "28 Hendon Avenue",
-            distance: 120,
-            duration: "13 mins",
-        },
-        {
-            destination_address: "1 sommerset road",
-            distance: 156,
-            duration: "10 mins",
-        },
-        {
-            destination_address: "royal oak kfc",
-            distance: 134,
-            duration: "5 mins",
-        },
-        {
-            destination_address: "icco sake bar",
-            distance: 123,
-            duration: "16 mins",
-        },
-    ],
-    "1 sommerset road": [
-        {
-            destination_address: "28 Hendon Avenue",
-            distance: 120,
-            duration: "13 mins",
-        },
-        {
-            destination_address: "1 godwit place",
-            distance: 1056,
-            duration: "10 mins",
-        },
-        {
-            destination_address: "royal oak kfc",
-            distance: 134,
-            duration: "5 mins",
-        },
-        {
-            destination_address: "icco sake bar",
-            distance: 123,
-            duration: "16 mins",
-        },
-    ],
-    "royal oak kfc": [
-        {
-            destination_address: "28 Hendon Avenue",
-            distance: 120,
-            duration: "13 mins",
-        },
-        {
-            destination_address: "1 godwit place",
-            distance: 1056,
-            duration: "10 mins",
-        },
-        {
-            destination_address: "1 sommerset road",
-            distance: 1034,
-            duration: "5 mins",
-        },
-        {
-            destination_address: "icco sake bar",
-            distance: 123,
-            duration: "16 mins",
-        },
-    ],
-};
-const calculateDurations = () => {
-    const intermediateAddresses = getAllIntermediateAddresses(something2);
-    const allPermutations = perm(intermediateAddresses);
-    const finalisePermutation = finalisePermutations(allPermutations);
-    // console.log(finalisePermutation)
+const calculateDurations = (finalisePermutation, durationsInTrafficFromOrigin, durationToOtherAddresses) => {
+    const pathDurationDistanceArray = [];
     finalisePermutation.forEach((path) => {
-        let cost = 0;
+        let totalDistanceCost = 0;
+        let totalDurationCost = 0;
+        // console.log(path)
+        let stringThing = "";
         for (let i = 0; i < path.length - 1; i++) {
             let costTo;
+            let distanceCostTo;
+            let durationCostTo;
             if (i == 0) {
                 // @ts-ignore
-                costTo = something[path[i]].filter((obj) => {
+                costTo = durationsInTrafficFromOrigin[path[i]].filter((obj) => {
                     return obj.destination_address == path[i + 1];
                 });
-                costTo = costTo[0].distance;
-                cost += costTo;
+                // console.log(costTo)
+                distanceCostTo = costTo[0].distance;
+                durationCostTo = costTo[0].duration_in_traffic;
+                //466
+                stringThing = stringThing + "+" + durationCostTo.toString();
+                // console.log("starting from origin",durationCostTo)
+                totalDistanceCost += distanceCostTo;
+                totalDurationCost += durationCostTo;
             }
             else {
                 // @ts-ignore
-                costTo = something2[path[i]].filter((obj) => {
+                costTo = durationToOtherAddresses[path[i]].filter((obj) => {
                     return obj.destination_address == path[i + 1];
                 });
-                costTo = costTo[0].distance;
-                cost += costTo;
+                distanceCostTo = costTo[0].distance;
+                durationCostTo = costTo[0].duration_in_traffic;
+                stringThing = stringThing + "+" + durationCostTo.toString();
+                // console.log("address to address", durationCostTo)
+                totalDistanceCost += distanceCostTo;
+                totalDurationCost += durationCostTo;
             }
+            // console.log(distanceCostTo)
         }
-        console.log(path);
-        console.log(cost);
-        console.log("end of one loop my guy");
+        // console.log(stringThing)
+        pathDurationDistanceArray.push({
+            path: path,
+            distanceCost: totalDistanceCost,
+            durationCost: totalDurationCost
+        });
     });
+    return pathDurationDistanceArray;
 };
-// const resolveAddressToAddressPromises = async (promises: any) => {
-//   const data: any = [];
-//   for (let i = 0; i < promises.length; i++) {
-//     promises[i].then((res: any) => {
-//       data.push(res);
-//       console.log(res);
-//     });
-//   }
-// };
-// calculateDurations()
+const getLowestDuration = (durationMatrix) => {
+    return durationMatrix.reduce((prev, current) => (prev.durationCost < current.durationCost) ? prev : current);
+};
 const someFn = () => __awaiter(void 0, void 0, void 0, function* () {
-    //   const durationsInTrafficFromOrigin = await getAllDurationsInTrafficFromOrigin(
-    //     [
-    //       "ChIJR8zzRztEDW0RgURQugqgZXc",
-    //       "ChIJpb_XUG9GDW0RHHjFeUfkyaI",
-    //       "ChIJ-_1UQ6ZIDW0RumOp-3Fqt2Q",
-    //       "ChIJ9VaVLcJGDW0R0Zjhcz3D76c",
-    //     ],
-    //     "ChIJcbl38nRGDW0RsRJ729jEPic"
-    //   );
-    //   console.log(durationsInTrafficFromOrigin);
-    const durationToOtherAddresses = yield getAllDurationsInTrafficFromAddressToAddressPromises([
+    const origin = "ChIJcbl38nRGDW0RsRJ729jEPic";
+    const intermediateAddresses = [
         "ChIJR8zzRztEDW0RgURQugqgZXc",
         "ChIJpb_XUG9GDW0RHHjFeUfkyaI",
         "ChIJ-_1UQ6ZIDW0RumOp-3Fqt2Q",
-    ]);
-    console.log("we are in the mains", durationToOtherAddresses);
-    // console.log(durationToOtherAddresses);
-    // const resolvePromises = resolveAddressToAddressPromises(
-    //   durationToOtherAddresses
-    // );
-    // console.log(resolvePromises);
-    // console.log(process.env.googleAPIKey)
+        "ChIJ9VaVLcJGDW0R0Zjhcz3D76c",
+    ];
+    const finalDestination = "ChIJuTpUzK5HDW0R1OjdcOplzxk";
+    // @ts-ignore
+    const { durationsInTrafficFromOrigin, origin_address } = yield getAllDurationsInTrafficFromOrigin(intermediateAddresses, origin);
+    // @ts-ignore
+    const { durationToOtherAddresses, destination_address } = yield getAllDurationsInTrafficFromAddressToAddressPromises(intermediateAddresses.concat(finalDestination));
+    const allIntermediateAddresses = getAllIntermediateAddresses(durationToOtherAddresses);
+    const allIntermediateAddressPermutations = perm(allIntermediateAddresses);
+    const finalPermutations = finalisePermutations(origin_address, allIntermediateAddressPermutations, destination_address);
+    const durationMatrix = calculateDurations(finalPermutations, durationsInTrafficFromOrigin, durationToOtherAddresses);
+    const lowestDuration = getLowestDuration(durationMatrix);
+    console.log(lowestDuration);
 });
 someFn();
