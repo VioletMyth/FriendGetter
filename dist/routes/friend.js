@@ -36,7 +36,7 @@ router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //Find all users
-    const friends = Friend_1.default.find();
+    const friends = yield Friend_1.default.find();
     res.send(friends);
 }));
 // router.put("/:id", async (req: Request, res: Response) => {

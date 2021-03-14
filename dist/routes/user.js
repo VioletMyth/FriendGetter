@@ -31,7 +31,7 @@ router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //Find all users
-    const users = User_1.default.find();
+    const users = yield User_1.default.find();
     res.send(users);
 }));
 router.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {

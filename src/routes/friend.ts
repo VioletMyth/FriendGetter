@@ -30,7 +30,7 @@ router.post("/", async (req: Request, res: Response) => {
 
 router.get("/", async (req: Request, res: Response) => {
   //Find all users
-  const friends = Friend.find();
+  const friends = await Friend.find();
   res.send(friends);
 });
 
