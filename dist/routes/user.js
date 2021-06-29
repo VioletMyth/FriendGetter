@@ -15,10 +15,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const User_1 = __importDefault(require("../models/User"));
 const lodash_1 = __importDefault(require("lodash"));
+const joi_1 = __importDefault(require("joi"));
 // import Friend from "../models/Friend";
 const router = express_1.Router();
+const userSchemaValidation = joi_1.default.object({
+    name: joi_1.default.string().pattern(new RegExp("^[a-zA-Z]+$")).required(),
+    email: joi_1.default.string().pattern(new RegExp("/emailRegex")).required(),
+    password: joi_1.default.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")),
+});
 router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const isValidBody = userSchemaValidation.validate(req.body);
+    if (!isValidBody) {
+        res.status(400).send("An error has occured in the request");
+        return;
+    }
     const { name, email, password } = req.body;
+    // console.log(req);
     let user = new User_1.default({
         name: name,
         email: email,
